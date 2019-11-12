@@ -5,6 +5,7 @@
  * @format
  * @flow
  */
+import './shim.js';
 
 import React from 'react';
 import {
@@ -24,11 +25,29 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import './shim.js';
-import crypto from 'crypto';
+import ipfsClient from 'ipfs-http-client';
+var ipfs = ipfsClient('localhost', '5001', {protocol: 'http'});
+
+global.XMLHttpRequest = global.originalXMLHttpRequest || global.XMLHttpRequest;
+global.FormData = global.originalFormData || global.FormData;
+
+if (window.FETCH_SUPPORT) {
+  window.FETCH_SUPPORT.blob = false;
+} else {
+  global.Blob = global.originalBlob || global.Blob|| null;
+  global.FileReader = global.originalFileReader || global.FileReader;
+}
+
+// https://github.com/facebook/react-native/issues/25910
+// https://github.com/facebook/react-native/issues/25701
 
 const App: () => React$Node = () => {
-  console.log(crypto.randomBytes(32).toString('hex'));
+  console.log(ipfs);
+  const dagPut = async () => {
+    const hash = await ipfs.id();
+    console.log('HASH', hash);
+  };
+  dagPut();
   return (
     <>
       <StatusBar barStyle="dark-content" />
