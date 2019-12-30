@@ -10,5 +10,8 @@ npm-debug.*
 web-build/
 web-report/
 
+# Stick to a single package manager client to avoid lockfile conflicts
+yarn.lock
+
 # macOS
 .DS_Store
