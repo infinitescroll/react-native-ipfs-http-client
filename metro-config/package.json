@@ -1,20 +1,23 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "main.ts",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject",
+    "start": "npx expo start -c",
+    "android": "npx expo start -c --android",
+    "ios": "npx expo start -c --ios",
+    "web": "npx expo start --web",
+    "eject": "npx expo eject",
     "update": "npx ncu -x 'react, react-dom, react-native, react-native-screens, @types/react, @types/react-native'"
   },
   "dependencies": {
     "expo": "~36.0.0",
+    "ipfs-http-client": "^40.1.0",
+    "node-libs-react-native": "^1.0.3",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-screens": "2.0.0-alpha.12",
-    "react-native-web": "~0.11.7"
+    "react-native-web": "~0.11.7",
+    "vm-browserify": "^1.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
