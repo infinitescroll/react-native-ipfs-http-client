@@ -1,0 +1,34 @@
+{
+  "main": "main.ts",
+  "scripts": {
+    "start": "npx expo start -c",
+    "android": "npx expo start -c --android",
+    "ios": "npx expo start -c --ios",
+    "web": "npx expo start --web",
+    "eject": "npx expo eject",
+    "update": "npx ncu -x 'react, react-dom, react-native, react-native-screens, @types/react, @types/react-native'"
+  },
+  "dependencies": {
+    "expo": "~36.0.0",
+    "ipfs-http-client": "^40.1.0",
+    "node-libs-react-native": "^1.0.3",
+    "react": "~16.9.0",
+    "react-dom": "~16.9.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
+    "react-native-crypto": "^2.2.0",
+    "react-native-randombytes": "^3.5.3",
+    "react-native-screens": "2.0.0-alpha.12",
+    "react-native-web": "~0.11.7",
+    "vm-browserify": "^1.1.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@types/react": "~16.9.0",
+    "@types/react-native": "~0.60.23",
+    "babel-preset-expo": "~8.0.0",
+    "expo-cli": "^3.11.3",
+    "npm-check-updates": "^4.0.1",
+    "typescript": "~3.6.3"
+  },
+  "private": true
+}
