@@ -7,7 +7,13 @@
 
 import "node-libs-react-native/globals";
 
-import { registerRootComponent } from "expo";
+import { AppRegistry, Platform } from "react-native";
 import App from "./App";
 
-registerRootComponent(App);
+AppRegistry.registerComponent("ReactNativeIPFS", () => App);
+
+if (Platform.OS === "web") {
+  const rootTag =
+    document.getElementById("root") || document.getElementById("main");
+  AppRegistry.runApplication("ReactNativeIPFS", { rootTag });
+}
