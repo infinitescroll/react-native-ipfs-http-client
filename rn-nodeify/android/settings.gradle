@@ -9,6 +9,6 @@ include ':react-native-randombytes'
 project(':react-native-randombytes').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-randombytes/android')
 includeUnimodulesProjects()
 
-rootProject.name = 'ReactNativeIPFS'
+rootProject.name = 'ReactNativeIPFSNodeify'
 
 include ':app'

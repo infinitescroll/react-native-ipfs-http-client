@@ -2,7 +2,7 @@ platform :ios, '10.0'
 
 require_relative '../node_modules/react-native-unimodules/cocoapods'
 
-target 'ReactNativeIPFS' do
+target 'ReactNativeIPFSNodeify' do
 
   rnPrefix = "../node_modules/react-native"
   
