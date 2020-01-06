@@ -19,6 +19,9 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
-    }
-  }
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
+  },
+  "displayName": "RN IPFS NIFY",
+  "name": "ReactNativeIPFSNodeify"
 }
