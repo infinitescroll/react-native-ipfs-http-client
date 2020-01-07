@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "npx react-native start",
+    "start": "npx react-native start --reset-cache",
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
     "update": "npx ncu -x 'react, react-dom, react-native, react-native-screens, @types/react, @types/react-native'",
@@ -44,7 +44,8 @@
     "tty-browserify": "0.0.0",
     "url": "^0.10.3",
     "util": "^0.10.4",
-    "vm-browserify": "0.0.4"
+    "vm-browserify": "0.0.4",
+    "whatwg-url": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

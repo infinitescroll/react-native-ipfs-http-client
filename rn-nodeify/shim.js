@@ -1,3 +1,8 @@
+import { URL, URLSearchParams } from "whatwg-url";
+
+global.URL = URL;
+global.URLSearchParams = URLSearchParams;
+
 if (typeof __dirname === "undefined") global.__dirname = "/";
 if (typeof __filename === "undefined") global.__filename = "";
 if (typeof process === "undefined") {
