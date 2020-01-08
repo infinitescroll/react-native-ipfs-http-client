@@ -1,9 +1,10 @@
 {
   "scripts": {
-    "start": "npx react-native start",
+    "start": "npx react-native start --reset-cache",
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
     "update": "npx ncu -x 'react, react-dom, react-native, react-native-screens, @types/react, @types/react-native'",
+    "clean": "watchman watch-del-all",
     "postinstall": "npx rn-nodeify --install --hack"
   },
   "dependencies": {
@@ -16,7 +17,7 @@
     "dns.js": "^1.0.1",
     "domain-browser": "^1.2.0",
     "events": "^1.1.1",
-    "expo": "~36.0.0",
+    "expo": "^36.0.2",
     "https-browserify": "0.0.1",
     "ipfs-http-client": "^40.1.0",
     "path-browserify": "0.0.0",
@@ -44,10 +45,13 @@
     "tty-browserify": "0.0.0",
     "url": "^0.10.3",
     "util": "^0.10.4",
-    "vm-browserify": "0.0.4"
+    "vm-browserify": "0.0.4",
+    "whatwg-url": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.7.7",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.7",
     "@types/react": "~16.9.0",
     "@types/react-native": "~0.60.23",
     "babel-jest": "~24.9.0",
