@@ -31,6 +31,8 @@ module.exports = function(api) {
     //   }
     // ]
 
-    presets: ["babel-preset-expo"]
+    presets: ["babel-preset-expo"],
+    // plugins: ["@babel/plugin-transform-regenerator"]
+    plugins: ["@babel/plugin-proposal-async-generator-functions"]
   };
 };
