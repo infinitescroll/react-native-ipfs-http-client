@@ -1,3 +1,5 @@
+.connect-deps.json
+
 ### Original contents of .gitignore before ejecting not covered by
 # gitignore.io template
 # Note: Assuming ejecting means not targeting the web environment,

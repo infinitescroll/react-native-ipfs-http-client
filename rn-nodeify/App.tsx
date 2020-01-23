@@ -7,13 +7,23 @@ import crypto from "crypto";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
+// Experiments with directly browserifying the code rather than using
+// the dist code transpiled using IPFS's Babel config
 // const ipfs = require("./browserified.js");
 // import ipfsClient from "./browserified.js";
-// import ipfsClient from "ipfs-http-client";
 // const ipfsClient = require("./browserified.js");
-const ipfsClient = require("ipfs-http-client/dist/index.js");
+
+import ipfsClient from "ipfs-http-client";
+
+// When not using the async iterators Babel plugin, you need to get the
+// dist version of the file
+// const ipfsClient = require("ipfs-http-client/dist/index.js");
+
 // console.log(ipfsClient())
-const kyDefault = require("ky-universal").default;
+
+// For testing ky calls directly rather
+// than via js-ipfs-http-client:
+// const kyDefault = require("ky-universal").default;
 
 // Imports internal to ipfs
 // const FormData = require('form-data')
@@ -65,10 +75,21 @@ export default function App() {
       // // console.log("cid", cid.toString());
       // return cid;
 
-      console.log({ fetch });
-      const result = await ipfs.addFromURL("http://example.com/");
-      console.log("result");
-      return result;
+      // console.log({ fetch });
+      // const result = await ipfs.addFromURL("http://example.com/");
+      // console.log("result");
+      // return result;
+
+      // For the ndjson parsing step to work, the input data
+      // needs to be newline-delimited JSON according to the spec
+      // like `['{"id": 1}\n', '{"id"', ': 2}', '\n{"id": 3}\n']`
+      const int = await ipfs.add(Buffer.from("hello native"));
+      console.log("TCL: test -> int", int);
+
+      // const out = await ipfs.cat(
+      //   'QmPChd2hVbrJ6bfo3WBcTW4iZnpHm8TEzWkLHmLpXhF68A',
+      // );
+      // console.log('TCL: test -> out', out.toString());
 
       // async function getResponseSize(url) {
       //   const response = await fetch(url);

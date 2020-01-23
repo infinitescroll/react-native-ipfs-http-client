@@ -19,7 +19,7 @@
     "events": "^1.1.1",
     "expo": "^36.0.2",
     "https-browserify": "0.0.1",
-    "ipfs-http-client": "^40.1.0",
+    "ipfs-http-client": "file:.connect-deps-cache/ipfs-http-client-41.0.0-1579759103832.tgz",
     "ky": "^0.16.1",
     "ky-universal": "^0.3.0",
     "path-browserify": "0.0.0",
@@ -57,6 +57,7 @@
     "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.7",
     "@stardazed/streams-polyfill": "^2.1.0",
+    "@types/node": "^13.1.8",
     "@types/react": "~16.9.0",
     "@types/react-native": "~0.60.23",
     "babel-jest": "~24.9.0",
@@ -70,8 +71,7 @@
     "react-test-renderer": "~16.9.0",
     "rn-nodeify": "^10.2.0",
     "typescript": "~3.6.3",
-    "web-streams-polyfill": "^2.0.6",
-    "whatwg-fetch": "^3.0.0"
+    "web-streams-polyfill": "^2.0.6"
   },
   "private": true,
   "react-native": {

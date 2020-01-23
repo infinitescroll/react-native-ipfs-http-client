@@ -1,6 +1,5 @@
 import { URL, URLSearchParams } from "whatwg-url";
 
-// global.fetch = require("whatwg-fetch").fetch;
 // global.fetch = require("./fetch.js").fetch;
 // import "@stardazed/streams-polyfill";
 
@@ -15,7 +14,12 @@ import { URL, URLSearchParams } from "whatwg-url";
 // Going with import until we figure out exactly what would need to be
 // done manually with a require style and directly editing the globals
 // global.fetch = require("@stardazed/streams-polyfill");
-import "@stardazed/streams-polyfill";
+
+// ***
+// Used this fetch polyfill most recently - testing whether updated
+// version of js-ipfs-http-client indeed doesn't need this
+// import "@stardazed/streams-polyfill";
+// ***
 
 global.Symbol = require("core-js/es6/symbol");
 
@@ -42,10 +46,38 @@ require("core-js/fn/symbol/async-iterator");
 // To address
 // Error: FileReader.readAsArrayBuffer is not implemented
 // from: https://stackoverflow.com/questions/42829838/react-native-atob-btoa-not-working-without-remote-js-debugging
+
+// const chars =
+//   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+// const atob = (input = "") => {
+//   console.log({ input });
+//   let str = input.replace(/=+$/, "");
+//   let output = "";
+
+//   if (str.length % 4 == 1) {
+//     throw new Error(
+//       "'atob' failed: The string to be decoded is not correctly encoded."
+//     );
+//   }
+//   for (
+//     let bc = 0, bs = 0, buffer, i = 0;
+//     (buffer = str.charAt(i++));
+//     ~buffer && ((bs = bc % 4 ? bs * 64 + buffer : buffer), bc++ % 4)
+//       ? (output += String.fromCharCode(255 & (bs >> ((-2 * bc) & 6))))
+//       : 0
+//   ) {
+//     buffer = chars.indexOf(buffer);
+//   }
+
+//   return output;
+// };
+
+// Hugo's version of atob
+// from: https://stackoverflow.com/questions/42829838/react-native-atob-btoa-not-working-without-remote-js-debugging
 const chars =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 const atob = (input = "") => {
-  let str = input.replace(/=+$/, "");
+  let str = input.replace(/[=]+$/, "");
   let output = "";
 
   if (str.length % 4 == 1) {
@@ -66,9 +98,11 @@ const atob = (input = "") => {
   return output;
 };
 
+// Hugo's version
 FileReader.prototype.readAsArrayBuffer = function(blob) {
-  console.log({"data": blob._data})
-  if (this.readyState === this.LOADING) throw new Error("InvalidStateError");
+  if (this.readyState === this.LOADING) {
+    throw new Error("InvalidStateError");
+  }
   this._setReadyState(this.LOADING);
   this._result = null;
   this._error = null;
@@ -77,18 +111,50 @@ FileReader.prototype.readAsArrayBuffer = function(blob) {
     const content = atob(
       fr.result.substr("data:application/octet-stream;base64,".length)
     );
+    console.log({ content });
     const buffer = new ArrayBuffer(content.length);
     const view = new Uint8Array(buffer);
     view.set(Array.from(content).map(c => c.charCodeAt(0)));
     this._result = buffer;
     this._setReadyState(this.DONE);
   };
-
-  if (!blob._data) {
-    return;
-  }
-  fr.readAsText(blob);
+  fr.readAsDataURL(blob);
 };
+
+// Modified version to see internals
+// FileReader.prototype.readAsArrayBuffer = function(blob) {
+//   console.log({ data: blob._data });
+//   if (this.readyState === this.LOADING) throw new Error("InvalidStateError");
+//   this._setReadyState(this.LOADING);
+//   this._result = null;
+//   this._error = null;
+//   const fr = new FileReader();
+//   fr.onloadend = () => {
+//     console.log("fr.result", fr.result);
+//     let content;
+//     // TODO: Remove this includes modification
+//     if (fr.result.includes("data:application/octet-stream;base64,")) {
+//       content = atob(
+//         fr.result.substr("data:application/octet-stream;base64,".length)
+//       );
+//     } else {
+//       content = atob(fr.result);
+//     }
+//     console.log("content", content);
+//     // const newContent = String(content);
+//     const buffer = new ArrayBuffer(content.length);
+//     const view = new Uint8Array(buffer);
+//     view.set(Array.from(content).map(c => c.charCodeAt(0)));
+//     this._result = buffer;
+//     this._setReadyState(this.DONE);
+//   };
+
+//   if (!blob._data) {
+//     return;
+//   }
+//   console.log("blob", blob);
+//   fr.readAsDataURL(blob);
+// };
 
 /// ---
 // // Latest:
@@ -112,82 +178,82 @@ FileReader.prototype.readAsArrayBuffer = function(blob) {
 
 // ---
 // Decoder
-// var log = Math.log;
-// var LN2 = Math.LN2;
-// var clz32 =
-//   Math.clz32 ||
-//   function(x) {
-//     return (31 - log(x >>> 0) / LN2) | 0;
-//   };
-// var fromCharCode = String.fromCharCode;
-// var Object_prototype_toString = {}.toString;
-// var NativeSharedArrayBuffer = window["SharedArrayBuffer"];
-// var sharedArrayBufferString = NativeSharedArrayBuffer
-//   ? Object_prototype_toString.call(NativeSharedArrayBuffer)
-//   : "";
-// var NativeUint8Array = window.Uint8Array;
-// var patchedU8Array = NativeUint8Array || Array;
-// var arrayBufferString = Object_prototype_toString.call(
-//   (NativeUint8Array ? ArrayBuffer : patchedU8Array).prototype
-// );
-// function decoderReplacer(encoded) {
-//   var codePoint = encoded.charCodeAt(0) << 24;
-//   var leadingOnes = clz32(~codePoint) | 0;
-//   var endPos = 0,
-//     stringLen = encoded.length | 0;
-//   var result = "";
-//   if (leadingOnes < 5 && stringLen >= leadingOnes) {
-//     codePoint = (codePoint << leadingOnes) >>> (24 + leadingOnes);
-//     for (endPos = 1; endPos < leadingOnes; endPos = (endPos + 1) | 0)
-//       codePoint =
-//         (codePoint << 6) | (encoded.charCodeAt(endPos) & 0x3f) /*0b00111111*/;
-//     if (codePoint <= 0xffff) {
-//       // BMP code point
-//       result += fromCharCode(codePoint);
-//     } else if (codePoint <= 0x10ffff) {
-//       // https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-//       codePoint = (codePoint - 0x10000) | 0;
-//       result += fromCharCode(
-//         ((codePoint >> 10) + 0xd800) | 0, // highSurrogate
-//         ((codePoint & 0x3ff) + 0xdc00) | 0 // lowSurrogate
-//       );
-//     } else endPos = 0; // to fill it in with INVALIDs
-//   }
-//   for (; endPos < stringLen; endPos = (endPos + 1) | 0) result += "\ufffd"; // replacement character
-//   return result;
-// }
-// function TextDecoder() {}
-// TextDecoder["prototype"]["decode"] = function(inputArrayOrBuffer) {
-//   console.log({ inputArrayOrBuffer });
-//   var buffer =
-//     (inputArrayOrBuffer && inputArrayOrBuffer.buffer) || inputArrayOrBuffer;
-//   var asObjectString = Object_prototype_toString.call(buffer);
-//   if (
-//     asObjectString !== arrayBufferString &&
-//     asObjectString !== sharedArrayBufferString
-//   )
-//     throw Error(
-//       "Failed to execute 'decode' on 'TextDecoder': The provided value is not of type '(ArrayBuffer or ArrayBufferView)'"
-//     );
-//   var inputAs8 = NativeUint8Array ? new patchedU8Array(buffer) : buffer;
-//   var resultingString = "";
-//   for (
-//     var index = 0, len = inputAs8.length | 0;
-//     index < len;
-//     index = (index + 32768) | 0
-//   )
-//     resultingString += fromCharCode.apply(
-//       0,
-//       inputAs8[NativeUint8Array ? "subarray" : "slice"](
-//         index,
-//         (index + 32768) | 0
-//       )
-//     );
+var log = Math.log;
+var LN2 = Math.LN2;
+var clz32 =
+  Math.clz32 ||
+  function(x) {
+    return (31 - log(x >>> 0) / LN2) | 0;
+  };
+var fromCharCode = String.fromCharCode;
+var Object_prototype_toString = {}.toString;
+var NativeSharedArrayBuffer = window["SharedArrayBuffer"];
+var sharedArrayBufferString = NativeSharedArrayBuffer
+  ? Object_prototype_toString.call(NativeSharedArrayBuffer)
+  : "";
+var NativeUint8Array = window.Uint8Array;
+var patchedU8Array = NativeUint8Array || Array;
+var arrayBufferString = Object_prototype_toString.call(
+  (NativeUint8Array ? ArrayBuffer : patchedU8Array).prototype
+);
+function decoderReplacer(encoded) {
+  var codePoint = encoded.charCodeAt(0) << 24;
+  var leadingOnes = clz32(~codePoint) | 0;
+  var endPos = 0,
+    stringLen = encoded.length | 0;
+  var result = "";
+  if (leadingOnes < 5 && stringLen >= leadingOnes) {
+    codePoint = (codePoint << leadingOnes) >>> (24 + leadingOnes);
+    for (endPos = 1; endPos < leadingOnes; endPos = (endPos + 1) | 0)
+      codePoint =
+        (codePoint << 6) | (encoded.charCodeAt(endPos) & 0x3f) /*0b00111111*/;
+    if (codePoint <= 0xffff) {
+      // BMP code point
+      result += fromCharCode(codePoint);
+    } else if (codePoint <= 0x10ffff) {
+      // https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+      codePoint = (codePoint - 0x10000) | 0;
+      result += fromCharCode(
+        ((codePoint >> 10) + 0xd800) | 0, // highSurrogate
+        ((codePoint & 0x3ff) + 0xdc00) | 0 // lowSurrogate
+      );
+    } else endPos = 0; // to fill it in with INVALIDs
+  }
+  for (; endPos < stringLen; endPos = (endPos + 1) | 0) result += "\ufffd"; // replacement character
+  return result;
+}
+function TextDecoder() {}
+TextDecoder["prototype"]["decode"] = function(inputArrayOrBuffer) {
+  console.log({ inputArrayOrBuffer });
+  var buffer =
+    (inputArrayOrBuffer && inputArrayOrBuffer.buffer) || inputArrayOrBuffer;
+  var asObjectString = Object_prototype_toString.call(buffer);
+  if (
+    asObjectString !== arrayBufferString &&
+    asObjectString !== sharedArrayBufferString
+  )
+    throw Error(
+      "Failed to execute 'decode' on 'TextDecoder': The provided value is not of type '(ArrayBuffer or ArrayBufferView)'"
+    );
+  var inputAs8 = NativeUint8Array ? new patchedU8Array(buffer) : buffer;
+  var resultingString = "";
+  for (
+    var index = 0, len = inputAs8.length | 0;
+    index < len;
+    index = (index + 32768) | 0
+  )
+    resultingString += fromCharCode.apply(
+      0,
+      inputAs8[NativeUint8Array ? "subarray" : "slice"](
+        index,
+        (index + 32768) | 0
+      )
+    );
 
-//   return resultingString.replace(/[\xc0-\xff][\x80-\xbf]*/g, decoderReplacer);
-// };
+  return resultingString.replace(/[\xc0-\xff][\x80-\xbf]*/g, decoderReplacer);
+};
 
-// global.TextDecoder = TextDecoder;
+global.TextDecoder = TextDecoder;
 
 // if (typeof TextEncoder === "undefined") {
 //   TextEncoder = function TextEncoder() {};
@@ -395,9 +461,6 @@ FileReader.prototype.readAsArrayBuffer = function(blob) {
 //   };
 // };
 // }
-
-// TODO: Try polyfillying async iterators here
-// START HERE NEXT
 
 /// ---
 
