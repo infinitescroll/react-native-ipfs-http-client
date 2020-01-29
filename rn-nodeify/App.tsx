@@ -62,7 +62,7 @@ export default function App() {
     console.log("Symbol.iterator", Symbol.iterator);
 
     // Note: Something is up with the JSON parsing when using dag.put rather
-    // than addFromURL
+    // than add
     // const obj = { simple: "object" };
     // const cid = await ipfs.dag.put(obj, {
     //   format: "dag-cbor",
@@ -77,16 +77,29 @@ export default function App() {
       // console.log("cid", cid);
       // // console.log("cid", cid.toString());
       // return cid;
+      //
       // console.log({ fetch });
-      // const result = await ipfs.addFromURL("http://example.com/");
+      //
+      // BREAKING CHANGE: addFromURL has been removed. Please use the exported
+      // urlSource utility and pass the result to add. See the URL source
+      // documentation for more details and an example.
+      // const result = await ipfs.addFromURL("http://example.com/"); // deprecated
       // console.log("result");
       // return result;
+      //
       // For the ndjson parsing step to work, the input data
       // needs to be newline-delimited JSON according to the spec
       // like `['{"id": 1}\n', '{"id"', ': 2}', '\n{"id": 3}\n']`
       //
+      // Before add was returned an async iterable
       // const int = await ipfs.add(Buffer.from("hello native"));
       // console.log("TCL: test -> int", int);
+      //
+      // Now that add returns an async iterable:
+      const int = await ipfs.add(Buffer.from("hello native"));
+      for await (let chunk of int) {
+        console.log({ chunk });
+      }
       //
       // const out = await ipfs.cat(
       //   'QmPChd2hVbrJ6bfo3WBcTW4iZnpHm8TEzWkLHmLpXhF68A',

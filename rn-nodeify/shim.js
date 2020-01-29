@@ -8,24 +8,24 @@ global.URLSearchParams = URLSearchParams;
 // ---
 // TOGGLE THIS CODE BLOCK ON AND OFF TO USE RN-FETCH-BLOB OR NOT
 // ---
-import RNFetchBlob from "rn-fetch-blob";
-const Fetch = RNFetchBlob.polyfill.Fetch;
+// import RNFetchBlob from "rn-fetch-blob";
+// const Fetch = RNFetchBlob.polyfill.Fetch;
 
-// replace built-in fetch
-// window.fetch = new Fetch({
-global.fetch = new Fetch({
-  // enable this option so that the response data conversion handled
-  // automatically
-  auto: true, // TODO: Decide if auto conversion is the best option here
-  // when receiving response data, the module will match its Content-Type header
-  // with strings in this array. If it contains any one of string in this array,
-  // the response body will be considered as binary data and the data will be
-  // stored in file system instead of in memory.
-  // By default, it only store response data to file system when Content-Type
-  // contains string `application/octet`.
-  binaryContentTypes: ["image/", "video/", "audio/"],
-  fileCache: true // TODO: Decide if this approach to storing files is the best
-}).build();
+// // replace built-in fetch
+// // window.fetch = new Fetch({
+// global.fetch = new Fetch({
+//   // enable this option so that the response data conversion handled
+//   // automatically
+//   auto: true, // TODO: Decide if auto conversion is the best option here
+//   // when receiving response data, the module will match its Content-Type header
+//   // with strings in this array. If it contains any one of string in this array,
+//   // the response body will be considered as binary data and the data will be
+//   // stored in file system instead of in memory.
+//   // By default, it only store response data to file system when Content-Type
+//   // contains string `application/octet`.
+//   binaryContentTypes: ["image/", "video/", "audio/"],
+//   fileCache: true // TODO: Decide if this approach to storing files is the best
+// }).build();
 // ---
 
 // Experiment with using a manually transpiled local version
