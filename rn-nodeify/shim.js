@@ -1,6 +1,37 @@
 import { URL, URLSearchParams } from "whatwg-url";
 
+console.log({ URL });
+
+global.URL = URL;
+global.URLSearchParams = URLSearchParams;
+
+// ---
+// TOGGLE THIS CODE BLOCK ON AND OFF TO USE RN-FETCH-BLOB OR NOT
+// ---
+import RNFetchBlob from "rn-fetch-blob";
+const Fetch = RNFetchBlob.polyfill.Fetch;
+
+// replace built-in fetch
+// window.fetch = new Fetch({
+global.fetch = new Fetch({
+  // enable this option so that the response data conversion handled
+  // automatically
+  auto: true, // TODO: Decide if auto conversion is the best option here
+  // when receiving response data, the module will match its Content-Type header
+  // with strings in this array. If it contains any one of string in this array,
+  // the response body will be considered as binary data and the data will be
+  // stored in file system instead of in memory.
+  // By default, it only store response data to file system when Content-Type
+  // contains string `application/octet`.
+  binaryContentTypes: ["image/", "video/", "audio/"],
+  fileCache: true // TODO: Decide if this approach to storing files is the best
+}).build();
+// ---
+
+// Experiment with using a manually transpiled local version
 // global.fetch = require("./fetch.js").fetch;
+
+// Best fetch + streams polyfill I found:
 // import "@stardazed/streams-polyfill";
 
 // const ReadableStream = require("web-streams-polyfill/es2018").ReadableStream;
@@ -8,6 +39,7 @@ import { URL, URLSearchParams } from "whatwg-url";
 
 // response.clone() is undefined
 // https://github.com/github/fetch/issues/746#issuecomment-573891642
+
 // https://github.com/jonnyreeves/fetch-readablestream/issues/12
 // global.fetch = require("fetch-readablestream");
 
@@ -16,8 +48,10 @@ import { URL, URLSearchParams } from "whatwg-url";
 // global.fetch = require("@stardazed/streams-polyfill");
 
 // ***
-// Used this fetch polyfill most recently - testing whether updated
-// version of js-ipfs-http-client indeed doesn't need this
+// Used this fetch polyfill most recently - once this PR
+// https://github.com/ipfs/js-ipfs-http-client/pull/1224
+// lands in js-ipfs-http-client we won't need this, and same when
+// using a local version of js-ifps-http-client with those changes
 // import "@stardazed/streams-polyfill";
 // ***
 
@@ -108,6 +142,7 @@ FileReader.prototype.readAsArrayBuffer = function(blob) {
   this._error = null;
   const fr = new FileReader();
   fr.onloadend = () => {
+    console.log("fr.result", fr.result);
     const content = atob(
       fr.result.substr("data:application/octet-stream;base64,".length)
     );
@@ -118,6 +153,7 @@ FileReader.prototype.readAsArrayBuffer = function(blob) {
     this._result = buffer;
     this._setReadyState(this.DONE);
   };
+  console.log("blob", blob);
   fr.readAsDataURL(blob);
 };
 
@@ -481,9 +517,6 @@ global.TextDecoder = TextDecoder;
 //     }
 //   }
 // }
-
-global.URL = URL;
-global.URLSearchParams = URLSearchParams;
 
 if (typeof __dirname === "undefined") global.__dirname = "/";
 if (typeof __filename === "undefined") global.__filename = "";
