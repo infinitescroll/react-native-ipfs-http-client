@@ -11,7 +11,7 @@
 *.orig.*
 
 # Stick to a single package manager client to avoid lockfile conflicts
-yarn.lock
+package-lock.json
 
 # Created by https://www.gitignore.io/api/reactnative
 # Edit at https://www.gitignore.io/?templates=reactnative
