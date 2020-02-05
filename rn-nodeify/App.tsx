@@ -15,6 +15,8 @@ import { StyleSheet, Text, View } from "react-native";
 
 import ipfsClient from "ipfs-http-client";
 
+const { urlSource } = ipfsClient;
+
 // When not using the async iterators Babel plugin, you need to get the
 // dist version of the file
 // const ipfsClient = require("ipfs-http-client/dist/index.js");
@@ -60,9 +62,9 @@ export default function App() {
     console.log("HASH", hash);
     console.log("Symbol", Symbol);
     console.log("Symbol.iterator", Symbol.iterator);
-    console.log("Getting updates");
-    console.log("window.Request", window.Request);
-    console.log("global.Request", global.Request);
+    // console.log("Getting updates");
+    // console.log("window.Request", window.Request);
+    // console.log("global.Request", global.Request);
 
     // Note: Something is up with the JSON parsing when using dag.put rather
     // than add
@@ -94,16 +96,20 @@ export default function App() {
       // needs to be newline-delimited JSON according to the spec
       // like `['{"id": 1}\n', '{"id"', ': 2}', '\n{"id": 3}\n']`
       //
-      // Before add was returned an async iterable
-      // const int = await ipfs.add(Buffer.from("hello native"));
-      // console.log("TCL: test -> int", int);
-      //
       // Now that add returns an async iterable:
-      const int = await ipfs.add(Buffer.from("hello native"));
+      const int = await ipfs.add(Buffer.from("2 hello native 2"));
       for await (let chunk of int) {
         // console.log({ chunk });
         console.log("chunk", chunk);
       }
+      //
+      // const int2 = await ipfs.add(
+      //   urlSource("https://ipfs.io/images/ipfs-logo.svg")
+      // );
+      // for await (let chunk of int2) {
+      //   // console.log({ chunk });
+      //   console.log("chunk", chunk);
+      // }
       //
       // console.log("About to make ky request");
       // (async () => {
@@ -111,7 +117,6 @@ export default function App() {
       //   const parsed = await ky
       //     .post("https://example.com", { json: { foo: true } })
       //     .json();
-
       //   console.log(parsed);
       //   //=> `{data: '🦄'}`
       // })();
