@@ -23,11 +23,13 @@ global.URLSearchParams = URLSearchParams;
 //   // stored in file system instead of in memory.
 //   // By default, it only store response data to file system when Content-Type
 //   // contains string `application/octet`.
-//   binaryContentTypes: ["image/", "video/", "audio/"],
-//   fileCache: true // TODO: Decide if this approach to storing files is the best
+//   binaryContentTypes: ["image/", "video/", "audio/"]
+//   // fileCache: true // TODO: Decide if this approach to storing files is the best
 // }).build();
 // ---
-
+// END OF CODE BLOCK TO TOGGLE
+// ---
+//
 // Experiment with using a manually transpiled local version
 // global.fetch = require("./fetch.js").fetch;
 
