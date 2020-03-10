@@ -15,7 +15,7 @@ import { StyleSheet, Text, View } from "react-native";
 
 import ipfsClient from "ipfs-http-client";
 
-const { urlSource } = ipfsClient;
+const { urlSource, globSource } = ipfsClient;
 
 // When not using the async iterators Babel plugin, you need to get the
 // dist version of the file
@@ -38,7 +38,7 @@ const { urlSource } = ipfsClient;
 
 const ipfs = ipfsClient({
   host: "localhost",
-  port: "5001",
+  port: "5002", // 5001 for go-ipfs
   protocol: "http"
 });
 // const ipfs = ipfsClient({
@@ -97,11 +97,34 @@ export default function App() {
       // like `['{"id": 1}\n', '{"id"', ': 2}', '\n{"id": 3}\n']`
       //
       // Now that add returns an async iterable:
-      const int = await ipfs.add(Buffer.from("2 hello native 2"));
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+      }
+      const randomInt = getRandomInt(10000);
+      const randomString = `hello ${randomInt}`;
+      console.log({ randomString });
+      const randomBuffer = Buffer.from(randomString);
+      console.log({ randomBuffer });
+      console.log("randomBuffer string", randomBuffer.toJSON());
+
+      const int = await ipfs.add(randomBuffer);
       for await (let chunk of int) {
         // console.log({ chunk });
         console.log("chunk", chunk);
       }
+
+      // const dagResult = await ipfs.dag.put({ test: randomString });
+      // console.log({ dagResult });
+
+      //
+      // const experiment = require("./experiment.json");
+      // const experiment = globSource("./experiment.json");
+      // const resultForLocalFile = await ipfs.add(experiment);
+      // const resultForLocalFile = await ipfs.add("./experiment.json");
+      // for await (let chunk of resultForLocalFile) {
+      //   // console.log({ chunk });
+      //   console.log("chunk", chunk);
+      // }
       //
       // const int2 = await ipfs.add(
       //   urlSource("https://ipfs.io/images/ipfs-logo.svg")

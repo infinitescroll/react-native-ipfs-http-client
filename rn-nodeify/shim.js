@@ -1,6 +1,6 @@
 import { URL, URLSearchParams } from "whatwg-url";
 
-console.log({ URL });
+// console.log({ URL });
 
 global.URL = URL;
 global.URLSearchParams = URLSearchParams;
@@ -225,7 +225,7 @@ var clz32 =
   };
 var fromCharCode = String.fromCharCode;
 var Object_prototype_toString = {}.toString;
-console.log("Object_prototype_toString", Object_prototype_toString);
+// console.log("Object_prototype_toString", Object_prototype_toString);
 var NativeSharedArrayBuffer = window["SharedArrayBuffer"];
 var sharedArrayBufferString = NativeSharedArrayBuffer
   ? Object_prototype_toString.call(NativeSharedArrayBuffer)
@@ -290,13 +290,14 @@ TextDecoder["prototype"]["decode"] = function(inputArrayOrBuffer) {
         (index + 32768) | 0
       )
     );
-  console.log({ resultingString });
+  // TODO: Determine how this is turning into "\":\"QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH\",\"Hash\":\"QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH\",\"Size\":\"6\"
+  // console.log({ resultingString });
 
   const finalResult = resultingString.replace(
     /[\xc0-\xff][\x80-\xbf]*/g,
     decoderReplacer
   );
-  console.log("last decoder step complete");
+  console.log("last decoder step complete", finalResult);
   return finalResult;
 };
 
