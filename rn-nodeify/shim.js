@@ -1,6 +1,6 @@
 import { URL, URLSearchParams } from "whatwg-url";
 
-console.log({ URL });
+// console.log({ URL });
 
 global.URL = URL;
 global.URLSearchParams = URLSearchParams;
@@ -225,6 +225,7 @@ var clz32 =
   };
 var fromCharCode = String.fromCharCode;
 var Object_prototype_toString = {}.toString;
+// console.log("Object_prototype_toString", Object_prototype_toString);
 var NativeSharedArrayBuffer = window["SharedArrayBuffer"];
 var sharedArrayBufferString = NativeSharedArrayBuffer
   ? Object_prototype_toString.call(NativeSharedArrayBuffer)
@@ -235,6 +236,7 @@ var arrayBufferString = Object_prototype_toString.call(
   (NativeUint8Array ? ArrayBuffer : patchedU8Array).prototype
 );
 function decoderReplacer(encoded) {
+  console.log({ encoded });
   var codePoint = encoded.charCodeAt(0) << 24;
   var leadingOnes = clz32(~codePoint) | 0;
   var endPos = 0,
@@ -266,6 +268,7 @@ TextDecoder["prototype"]["decode"] = function(inputArrayOrBuffer) {
   var buffer =
     (inputArrayOrBuffer && inputArrayOrBuffer.buffer) || inputArrayOrBuffer;
   var asObjectString = Object_prototype_toString.call(buffer);
+  console.log({ asObjectString });
   if (
     asObjectString !== arrayBufferString &&
     asObjectString !== sharedArrayBufferString
@@ -287,8 +290,15 @@ TextDecoder["prototype"]["decode"] = function(inputArrayOrBuffer) {
         (index + 32768) | 0
       )
     );
+  // TODO: Determine how this is turning into "\":\"QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH\",\"Hash\":\"QmbFMke1KXqnYyBBWxB74N4c5SBnJMVAiMNRcGu6x1AwQH\",\"Size\":\"6\"
+  // console.log({ resultingString });
 
-  return resultingString.replace(/[\xc0-\xff][\x80-\xbf]*/g, decoderReplacer);
+  const finalResult = resultingString.replace(
+    /[\xc0-\xff][\x80-\xbf]*/g,
+    decoderReplacer
+  );
+  console.log("last decoder step complete", finalResult);
+  return finalResult;
 };
 
 global.TextDecoder = TextDecoder;
